@@ -1,5 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js';
 import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/webxr/ARButton.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/loaders/GLTFLoader.js';
 
 // Scene, Camera, Renderer
 const scene = new THREE.Scene();
@@ -18,7 +19,7 @@ light.position.set(0.5, 1, 0.25);
 scene.add(light);
 
 // Load 3D Model
-const loader = new THREE.GLTFLoader();
+const loader = new GLTFLoader();
 loader.load('model.glb', function (gltf) {
     const model = gltf.scene;
     model.position.set(0, 0, -2); // Place the model 2 meters in front of the user
@@ -26,6 +27,11 @@ loader.load('model.glb', function (gltf) {
 }, undefined, function (error) {
     console.error(error);
 });
+
+// Add Error Handling
+if (!navigator.xr) {
+    document.getElementById('error-message').style.display = 'block';
+}
 
 // Animation Loop
 function animate() {
@@ -37,10 +43,3 @@ function render() {
 }
 
 animate();
-
-if (navigator.xr && navigator.xr.isSessionSupported) {
-    console.log("AR Supported");
-} else {
-    alert("AR is not supported on this device. Please use a compatible mobile device.");
-}
-
