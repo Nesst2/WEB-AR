@@ -1,23 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebXR AR Example</title>
-    <script src="main.js" defer></script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebXR AR Project</title>
+  
+  <!-- Import Map untuk mendefinisikan sumber CDN -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
-    <p id="error-message" style="color: white; display: none; text-align: center; padding: 20px;">
-        Your browser does not support WebXR or AR functionality.
-    </p>
+  <h1>WebXR Augmented Reality</h1>
+
+  <!-- WebXR AR Button -->
+  <button id="enter-ar">Enter AR</button>
+
+  <script type="module">
+    // Mengimpor Three.js dan modul-modul terkait
+    import * as THREE from 'three';
+    import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+    // Menyiapkan Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Menambahkan objek ke scene (contoh: kubus)
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    // Posisi kamera
+    camera.position.z = 5;
+
+    // Fungsi render
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Menambahkan WebXR ARButton
+    document.getElementById('enter-ar').addEventListener('click', () => {
+      const arButton = ARButton.createButton(renderer);
+      document.body.appendChild(arButton);
+      renderer.xr.enabled = true;
+    });
+
+  </script>
 </body>
 </html>
