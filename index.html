@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebXR AR Project</title>
-  
+
   <!-- Import Map untuk mendefinisikan sumber CDN -->
   <script type="importmap">
     {
@@ -35,13 +35,13 @@
     document.body.appendChild(renderer.domElement);
 
     // Menambahkan objek ke scene (contoh: kubus)
-    const geometry = new THREE.BoxGeometry();
+    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2); // Menyesuaikan ukuran kubus
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
     // Posisi kamera
-    camera.position.z = 5;
+    camera.position.z = 2; // Posisikan kamera lebih dekat ke objek
 
     // Fungsi render
     function animate() {
@@ -50,15 +50,28 @@
       cube.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
-    animate();
 
     // Menambahkan WebXR ARButton
     document.getElementById('enter-ar').addEventListener('click', () => {
-      const arButton = ARButton.createButton(renderer);
+      const arButton = ARButton.createButton(renderer, {
+        requiredFeatures: ['hit-test'], // Mengaktifkan hit-test untuk deteksi permukaan
+      });
       document.body.appendChild(arButton);
       renderer.xr.enabled = true;
+
+      // Setelah AR dimulai, objek akan tampil di dunia nyata melalui kamera
+      console.log('AR session started');
     });
 
+    // Menangani ukuran layar
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Memulai animasi
+    animate();
   </script>
 </body>
 </html>
